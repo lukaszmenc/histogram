@@ -1,6 +1,7 @@
 from PyQt5 import QtWidgets, QtCore
 
 from scripts.file_operations import get_file_path, get_data_from_csv
+from scripts.interface_utils import create_histogram
 
 
 class Interface(QtWidgets.QWidget):
@@ -26,12 +27,14 @@ class Interface(QtWidgets.QWidget):
                 self.columns.addItem(col_name)
             self.columns.update()
             self.dataframe = df
-        print(self.dataframe)
 
     def main_window(self):
         button_open_file = QtWidgets.QPushButton("Open CSV file")
         button_open_file.clicked.connect(lambda: self.open_file())
+
         button_create_histogram = QtWidgets.QPushButton("Create histogram")
+        button_create_histogram.clicked.connect(lambda: create_histogram(self.dataframe, self.columns.selectedItems(), value_lsl.text(), value_usl.text()))
+
         button_save = QtWidgets.QPushButton("Save histogram")
         button_save_report = QtWidgets.QPushButton("Save DOC report")
 
