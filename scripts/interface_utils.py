@@ -1,5 +1,5 @@
 from PyQt5 import QtWidgets
-from .data_operations import prepare_data
+from .data_operations import prepare_data, histogram
 
 
 def create_histogram(df, column_object, lsl, usl):
@@ -7,6 +7,8 @@ def create_histogram(df, column_object, lsl, usl):
         column_name = [item.text() for item in column_object][0]
         data = prepare_data(df, column_name)
         print(data)
+        chart = histogram(data, column_name, lsl, usl)
+        print(chart)
     except IndexError:
         QtWidgets.QMessageBox.warning(
             None,
