@@ -1,4 +1,4 @@
-from PyQt5 import QtWidgets, QtCore
+from PyQt5 import QtWidgets, QtCore, QtGui
 
 from scripts.file_operations import get_file_path, get_data_from_csv
 from scripts.interface_utils import create_histogram
@@ -13,8 +13,15 @@ class Interface(QtWidgets.QWidget):
 
         self.dataframe = None
         self.filepath = None
+        self.histogram = None
 
         self.columns = QtWidgets.QListWidget()
+        self.image_label = QtWidgets.QLabel()
+        self.image_label.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignHCenter)
+        self.coeff_label = QtWidgets.QLabel()
+        font = QtGui.QFont()
+        self.coeff_label.setFont(QtGui.QFont(font.defaultFamily(), 12))
+        self.coeff_label.setAlignment(QtCore.Qt.AlignHCenter)
 
         self.main_window()
 
@@ -33,7 +40,7 @@ class Interface(QtWidgets.QWidget):
         button_open_file.clicked.connect(lambda: self.open_file())
 
         button_create_histogram = QtWidgets.QPushButton("Create histogram")
-        button_create_histogram.clicked.connect(lambda: create_histogram(self.dataframe, self.columns.selectedItems(), value_lsl.text(), value_usl.text()))
+        button_create_histogram.clicked.connect(lambda: create_histogram(self.dataframe, self.columns.selectedItems(), value_lsl.text(), value_usl.text(), self.histogram, self.image_label, self.coeff_label))
 
         button_save = QtWidgets.QPushButton("Save histogram")
         button_save_report = QtWidgets.QPushButton("Save DOC report")
@@ -72,9 +79,14 @@ class Interface(QtWidgets.QWidget):
         menu_widget.setLayout(menu)
         menu_widget.setFixedWidth(320)
 
+        histogram_layout = QtWidgets.QVBoxLayout()
+        histogram_layout.addWidget(self.image_label)
+        histogram_layout.addWidget(self.coeff_label)
+
         window = QtWidgets.QHBoxLayout()
         window.setAlignment(QtCore.Qt.AlignLeft)
         window.addWidget(menu_widget)
+        window.addLayout(histogram_layout)
 
         self.setLayout(window)
         self.setWindowTitle(self.appname)

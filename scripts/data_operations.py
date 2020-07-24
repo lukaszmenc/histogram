@@ -71,7 +71,7 @@ def calculate_coeffs(values, lsl, usl):
     }
 
 
-def draw_vertical_line(text, value, color="g", linestyle="solid"):
+def draw_vertical_line(text, value, color="g", linestyle="dashed"):
     plt.annotate(
         text,
         xy=(value, 0.88),
@@ -103,8 +103,8 @@ def histogram(data, column_name, lsl, usl, minimum=None, maximum=None):
 
     plt.rcdefaults()
 
-    draw_vertical_line("LSL", lsl, "g", "dashed")
-    draw_vertical_line("USL", usl, "g", "dashed")
+    draw_vertical_line("LSL", lsl)
+    draw_vertical_line("USL", usl)
 
     if coeffs:
         draw_vertical_line("µ", coeffs["mu"], "y", "solid")
@@ -123,4 +123,4 @@ def histogram(data, column_name, lsl, usl, minimum=None, maximum=None):
 
     plt.close()
 
-    return buffer
+    return buffer, coeffs
