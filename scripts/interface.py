@@ -1,7 +1,8 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
+from PIL.ImageQt import ImageQt
+from PIL import Image
 
 from scripts.file_operations import get_file_path, get_data_from_csv
-from scripts.interface_utils import set_image, set_coeff
 from scripts.data_operations import prepare_data, histogram
 
 
@@ -54,8 +55,8 @@ class Interface(QtWidgets.QWidget):
 
             self.histogram = {'histogram': chart, 'data': coeffs}
 
-            set_image(self.image_label, self.histogram['histogram'])
-            set_coeff(self.coeff_label, self.histogram['data'])
+            self.set_image()
+            self.set_coeff()
 
         except IndexError:
             QtWidgets.QMessageBox.warning(
@@ -72,6 +73,27 @@ class Interface(QtWidgets.QWidget):
         if self.histogram:
             self.create_histogram()
 
+    def set_image(self):
+        image = Image.open(self.histogram['histogram'])
+        pixmap = QtGui.QPixmap.fromImage(ImageQt(image))
+        self.image_label.setPixmap(pixmap)
+
+    def set_coeff(self):
+        if self.histogram['data']:
+            self.coeff_label.setText(
+                f"\n\n\nCp: {self.histogram['data']['Cp']}\n"
+                f"CPU: {self.histogram['data']['CPU']}\n"
+                f"CPL: {self.histogram['data']['CPL']}\n"
+                f"Cpk: {self.histogram['data']['Cpk']}\n"
+                f"µ: {self.histogram['data']['mu']}\n"
+                f"σ: {self.histogram['data']['sigma']}\n"
+                f"min: {self.histogram['data']['min']}\n"
+                f"max: {self.histogram['data']['max']}\n"
+                f"ω: {self.histogram['data']['dominant']}"
+            )
+        else:
+            self.coeff_label.setText('No data')
+
     def main_window(self):
         button_open_file = QtWidgets.QPushButton("Open CSV file")
         button_open_file.clicked.connect(lambda: self.open_file())
@@ -87,13 +109,9 @@ class Interface(QtWidgets.QWidget):
         save_layout.addWidget(button_save_report)
 
         label_lsl = QtWidgets.QLabel('LSL')
-
         label_usl = QtWidgets.QLabel('USL')
-
         label_min = QtWidgets.QLabel('Min')
-
         label_max = QtWidgets.QLabel('Max')
-
 
         parameters = QtWidgets.QGridLayout()
         parameters.addWidget(label_lsl, 0, 0, 1, 1)
