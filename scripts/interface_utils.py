@@ -1,5 +1,4 @@
-from PyQt5 import QtWidgets, QtGui
-from .data_operations import prepare_data, histogram
+from PyQt5 import QtGui
 from PIL.ImageQt import ImageQt
 from PIL import Image
 
@@ -27,24 +26,6 @@ def set_coeff(label, data):
         label.setText('No data')
 
 
-def create_histogram(df, column_object, lsl, usl, output, image_label, coeff_label):
-    try:
-        column_name = [item.text() for item in column_object][0]
-        data = prepare_data(df, column_name)
-        chart, coeffs = histogram(data, column_name, float(lsl), float(usl))
 
-        output = {'histogram': chart, 'data': coeffs}
 
-        set_image(image_label, output['histogram'])
-        set_coeff(coeff_label, output['data'])
 
-    except IndexError:
-        QtWidgets.QMessageBox.warning(
-            None,
-            "No data",
-            'No column has been picked from the column list.\n'
-            'Make sure a file has been loaded with "Open CSV file".',
-            QtWidgets.QMessageBox.Ok,
-        )
-    except Exception as e:
-        print(type(e).__name__, e)
